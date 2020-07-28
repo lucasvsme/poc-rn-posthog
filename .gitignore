@@ -1,0 +1,15 @@
+.classpath
+.project
+.settings
+build/
+.idea/
+.gradle/
+local.properties
+*.iml
+*.swp
+.vscode/
+node_modules/
+npm-debug.log
+*.keystore
+!debug.keystore
+coverage/
