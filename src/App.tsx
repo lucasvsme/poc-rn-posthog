@@ -1,13 +1,21 @@
 import React from 'react';
-import { SafeAreaView, ScrollView, StatusBar } from 'react-native';
+import Native from 'react-native';
+
+import PostHog from 'posthog-react-native';
 
 const App: React.FC = (): React.ReactElement => {
+  React.useEffect(() => {
+    PostHog.screen('Home Screen', {
+      productType: 'FooApp',
+    });
+  }, []);
+
   return (
     <>
-      <StatusBar />
-      <SafeAreaView>
-        <ScrollView></ScrollView>
-      </SafeAreaView>
+      <Native.StatusBar />
+      <Native.SafeAreaView>
+        <Native.ScrollView></Native.ScrollView>
+      </Native.SafeAreaView>
     </>
   );
 };
