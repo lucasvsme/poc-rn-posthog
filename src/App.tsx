@@ -30,17 +30,19 @@ const App: React.FC = (): React.ReactElement => {
   const api = useImageApi(new ImageApiClientImpl());
 
   React.useEffect(() => {
-    api.change();
+    PostHog.screen('Home screen').then(() => {
+      api.change();
+    });
   }, []);
 
   const onClickYes = () => {
-    PostHog.capture('Clicked yes').then(() => {
+    PostHog.capture('Button clicked', { answer: 'yes' }).then(() => {
       api.change();
     });
   };
 
   const onClickNo = () => {
-    PostHog.capture('Clicked no').then(() => {
+    PostHog.capture('Button clicked', { answer: 'no' }).then(() => {
       api.change();
     });
   };
@@ -55,7 +57,9 @@ const App: React.FC = (): React.ReactElement => {
       <Native.SafeAreaView style={style.safeAreaView}>
         <Native.View style={style.view}>
           <Image uri={api.image} />
-          <Native.Text style={style.viewText}>Do you like it?</Native.Text>
+          <Native.Text style={style.viewText}>
+            Do you like the image?
+          </Native.Text>
           <Native.View style={[style.viewButtons, { width: window.width }]}>
             <PositiveButton onPress={onClickYes} disabled={api.isLoading}>
               Yes
