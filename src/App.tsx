@@ -1,147 +1,72 @@
 import React from 'react';
 import Native from 'react-native';
-import Axios from 'axios';
-import { Buffer } from 'buffer';
-
 import PostHog from 'posthog-react-native';
 
-function useApiClient() {
-  const [image, setImage] = React.useState<string>();
-  const [isLoading, setLoading] = React.useState<boolean>(false);
-  const [changed, setChanged] = React.useState<boolean>(false);
+import { Image } from './image';
+import { useImageApi, ImageApiClientImpl } from './api';
+import { PositiveButton, NegativeButton } from './button';
 
-  React.useEffect(() => {
-    if (changed === false) {
-      return;
-    }
-
-    Axios.get('https://thisartworkdoesnotexist.com/', {
-      responseType: 'arraybuffer',
-      headers: {
-        'Content-Type': 'image/jpeg',
-      },
-    })
-      .then((response) => response.data)
-      .then((arrayBuffer) => {
-        const encoded = Buffer.from(arrayBuffer).toString('base64');
-        const uri = `data:image/jpeg;base64,${encoded}`;
-
-        setImage(uri);
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setLoading(false);
-        setChanged(false);
-      });
-  }, [changed]);
-
-  const change = () => {
-    setLoading(true);
-    setChanged(true);
-  };
-
-  return { image, isLoading, change };
-}
+const style = Native.StyleSheet.create({
+  safeAreaView: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+    justifyContent: 'center',
+  },
+  view: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  viewText: {
+    margin: 32,
+  },
+  viewButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+  },
+});
 
 const App: React.FC = (): React.ReactElement => {
   const window = Native.useWindowDimensions();
-  const api = useApiClient();
+  const api = useImageApi(new ImageApiClientImpl());
 
   React.useEffect(() => {
     api.change();
   }, []);
 
   const onClickYes = () => {
-    PostHog.capture('Clicked yes');
-    api.change();
+    PostHog.capture('Clicked yes').then(() => {
+      api.change();
+    });
   };
 
   const onClickNo = () => {
-    PostHog.capture('Clicked no');
-    api.change();
+    PostHog.capture('Clicked no').then(() => {
+      api.change();
+    });
   };
 
   return (
     <>
-      <Native.StatusBar />
-      <Native.SafeAreaView
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-        }}>
-        <Native.View
-          style={{
-            width: window.width,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Native.Image
-            source={{
-              uri: api.image,
-              width: window.width / 1.2,
-              height: window.width / 1.2,
-            }}
-          />
-          <Native.Text style={{ margin: 16 }}>Do you like it?</Native.Text>
-          <Native.View
-            style={{
-              flexDirection: 'row',
-              width: window.width,
-              justifyContent: 'space-evenly',
-            }}>
-            <Button
-              onPress={onClickYes}
-              disabled={api.isLoading}
-              color={'#4caf50'}>
+      <Native.StatusBar
+        barStyle={'dark-content'}
+        translucent={false}
+        backgroundColor={'#dfdfdf'}
+      />
+      <Native.SafeAreaView style={style.safeAreaView}>
+        <Native.View style={style.view}>
+          <Image uri={api.image} />
+          <Native.Text style={style.viewText}>Do you like it?</Native.Text>
+          <Native.View style={[style.viewButtons, { width: window.width }]}>
+            <PositiveButton onPress={onClickYes} disabled={api.isLoading}>
               Yes
-            </Button>
-            <Button
-              onPress={onClickNo}
-              disabled={api.isLoading}
-              color={'#d32f2f'}>
+            </PositiveButton>
+            <NegativeButton onPress={onClickNo} disabled={api.isLoading}>
               No
-            </Button>
+            </NegativeButton>
           </Native.View>
         </Native.View>
       </Native.SafeAreaView>
     </>
-  );
-};
-
-type ButtonType = {
-  onPress(): void;
-  disabled: boolean;
-  color: string;
-};
-
-const Button: React.FC<ButtonType> = (props) => {
-  return (
-    <React.Fragment>
-      <Native.TouchableOpacity
-        onPress={props.onPress}
-        disabled={props.disabled}
-        activeOpacity={0.8}
-        delayPressIn={0.1}
-        delayPressOut={0.1}
-        style={{
-          backgroundColor: props.disabled ? '#c3c3c3' : props.color,
-          width: 50,
-          height: 50,
-          justifyContent: 'center',
-          borderRadius: 50 / 2,
-          elevation: 4,
-        }}>
-        <Native.Text
-          style={{
-            color: 'white',
-            textAlign: 'center',
-          }}>
-          {props.children}
-        </Native.Text>
-      </Native.TouchableOpacity>
-    </React.Fragment>
   );
 };
 
