@@ -54,11 +54,11 @@ export function useImageApi(imageApiClient: ImageApiClient) {
       });
   }, [changed]);
 
-  const change = () => {
+  const changeImage = () => {
     setLoading(true);
     setError(undefined);
     setChanged(true);
   };
 
-  return { image, error, isLoading, change };
+  return { image, error, isLoading, changeImage };
 }

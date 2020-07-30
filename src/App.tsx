@@ -30,21 +30,18 @@ const App: React.FC = (): React.ReactElement => {
   const api = useImageApi(new ImageApiClientImpl());
 
   React.useEffect(() => {
-    PostHog.screen('Home screen').then(() => {
-      api.change();
-    });
+    PostHog.screen('Home screen');
+    api.changeImage();
   }, []);
 
   const onClickYes = () => {
-    PostHog.capture('Button clicked', { answer: 'yes' }).then(() => {
-      api.change();
-    });
+    PostHog.capture('Button clicked', { answer: 'yes' });
+    api.changeImage();
   };
 
   const onClickNo = () => {
-    PostHog.capture('Button clicked', { answer: 'no' }).then(() => {
-      api.change();
-    });
+    PostHog.capture('Button clicked', { answer: 'no' });
+    api.changeImage();
   };
 
   return (
