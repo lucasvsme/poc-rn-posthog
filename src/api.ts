@@ -17,7 +17,7 @@ export class ImageApiClientImpl implements ImageApiClient {
 
   public async getRandomImage(): Promise<string> {
     return this.httpClient
-      .get('/', {
+      .get<ArrayBuffer>('/', {
         headers: {
           'Content-Type': 'image/jpeg',
         },
@@ -25,10 +25,8 @@ export class ImageApiClientImpl implements ImageApiClient {
       })
       .then((response) => response.data)
       .then((arrayBuffer) => {
-        const encoded = Buffer.from(arrayBuffer).toString('base64');
-        const uri = `data:image/jpeg;base64,${encoded}`;
-
-        return uri;
+        const base64 = Buffer.from(arrayBuffer).toString('base64');
+        return `data:image/jpeg;base64,${base64}`;
       });
   }
 }
