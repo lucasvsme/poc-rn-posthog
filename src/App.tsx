@@ -2,8 +2,9 @@ import React from 'react';
 import Native from 'react-native';
 import PostHog from 'posthog-react-native';
 
+import { AppContext } from './context';
 import { Image } from './image';
-import { useImageApi, ImageApiClientImpl } from './api';
+import { ImageApiClientImpl, useImageApi } from './api';
 import { PositiveButton, NegativeButton } from './button';
 
 const style = Native.StyleSheet.create({
@@ -25,9 +26,10 @@ const style = Native.StyleSheet.create({
   },
 });
 
-const App: React.FC = (): React.ReactElement => {
+export const App: React.FC = (): React.ReactElement => {
   const window = Native.useWindowDimensions();
-  const api = useImageApi(new ImageApiClientImpl());
+  const app = React.useContext(AppContext);
+  const api = useImageApi(new ImageApiClientImpl(app.httpClient));
 
   React.useEffect(() => {
     PostHog.screen('Home screen');
@@ -53,7 +55,7 @@ const App: React.FC = (): React.ReactElement => {
       />
       <Native.SafeAreaView style={style.safeAreaView}>
         <Native.View style={style.view}>
-          <Image uri={api.image} />
+          <Image testID={'app-image'} uri={api.image} />
           <Native.Text style={style.viewText}>
             Do you like the image?
           </Native.Text>

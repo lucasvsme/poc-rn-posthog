@@ -1,7 +1,10 @@
 import React from 'react';
 import Native from 'react-native';
 
-export type ImageType = { uri?: string };
+export type ImageType = {
+  testID?: string;
+  uri?: string;
+};
 
 export const Image: React.FC<ImageType> = (props) => {
   const window = Native.useWindowDimensions();
@@ -9,6 +12,7 @@ export const Image: React.FC<ImageType> = (props) => {
   return (
     <React.Fragment>
       <Native.View
+        testID={props.testID}
         style={{
           elevation: 4,
           shadowColor: '#000000',

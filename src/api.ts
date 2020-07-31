@@ -1,19 +1,13 @@
 import React from 'react';
-import Axios, { AxiosInstance } from 'axios';
+import { AxiosInstance } from 'axios';
 import { Buffer } from 'buffer';
-
-const DefaultHttpClient: AxiosInstance = Axios.create({
-  baseURL: 'https://thisartworkdoesnotexist.com/',
-});
 
 export interface ImageApiClient {
   getRandomImage(): Promise<string>;
 }
 
 export class ImageApiClientImpl implements ImageApiClient {
-  public constructor(
-    private readonly httpClient: AxiosInstance = DefaultHttpClient,
-  ) {}
+  public constructor(private readonly httpClient: AxiosInstance) {}
 
   public async getRandomImage(): Promise<string> {
     return this.httpClient
