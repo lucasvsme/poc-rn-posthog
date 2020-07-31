@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Image Matching snapshot 1`] = `
+<View
+  style={
+    Object {
+      "elevation": 4,
+      "shadowColor": "#000000",
+      "shadowOffset": Object {
+        "height": 4,
+        "width": 0,
+      },
+      "shadowOpacity": 0.5,
+      "shadowRadius": 4,
+    }
+  }
+>
+  <Image
+    source={
+      Object {
+        "height": 625,
+        "uri": "",
+        "width": 625,
+      }
+    }
+    style={
+      Object {
+        "borderRadius": 4,
+        "height": 625,
+        "width": 625,
+      }
+    }
+  />
+</View>
+`;
